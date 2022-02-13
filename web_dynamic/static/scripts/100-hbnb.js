@@ -1,6 +1,9 @@
 $(document).ready(function () {
-  /* filter amenities */
   let checkedAmenities = {};
+  let checkedStates = {};
+  let checkedCities = {};
+  let checkedLocations = {};
+  /* filter amenities */
   $(document).on('change', "input[type='checkbox']", function () {
     if (this.checked) {
       checkedAmenities[$(this).data('id')] = $(this).data('name');
@@ -12,6 +15,38 @@ $(document).ready(function () {
       $('div.amenities > h4').text(Object.values(checkedAmenities).join(', '));
     } else {
       $('div.amenities > h4').html('&nbsp;');
+    }
+  });
+  /* filter states */
+  $(document).on('change', ".locations > .popover > li > input[type='checkbox']", function () {
+    if (this.checked) {
+      checkedStates[$(this).data('id')] = $(this).data('name');
+      checkedLocations[$(this).data('id')] = $(this).data('name');
+    } else {
+      delete checkedStates[$(this).data('id')];
+      delete checkedLocations[$(this).data('id')];
+    }
+    let lst = Object.values(checkedLocations);
+    if (lst.length > 0) {
+      $('div.locations > h4').text(lst.join(', '));
+    } else {
+      $('div.locations > h4').html('&nbsp;');
+    }
+  });
+  /* filter cities */
+  $(document).on('change', ".locations > .popover > li > ul > li > input[type='checkbox']", function () {
+    if (this.checked) {
+      checkedCities[$(this).data('id')] = $(this).data('name');
+      checkedLocations[$(this).data('id')] = $(this).data('name');
+    } else {
+      delete checkedCities[$(this).data('id')];
+      delete checkedLocations[$(this).data('id')];
+    }
+    let lst = Object.values(checkedLocations);
+    if (lst.length > 0) {
+      $('div.locations > h4').text(lst.join(', '));
+    } else {
+      $('div.locations > h4').html('&nbsp;');
     }
   });
   /* checking api status */
@@ -28,7 +63,11 @@ $(document).ready(function () {
   getPlaces();
   /* render places after clicking the button */
   $('.filters button').click(function () {
-    getPlaces({ amenities: Object.values(checkedAmenities) });
+    getPlaces({
+      amenities: Object.values(checkedAmenities),
+      cities: Object.values(checkedCities),
+      states: Object.values(checkedStates)
+    });
   });
 });
 
